@@ -84,7 +84,7 @@ let requestOptions = {
 };
 
 function fetchParks(callState, callNumber) {
-  fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${callState}&limit=${callNumber}&api_key=pmR4TzuxnGHYZZcFfX8gchXlgxfdTbjPHLFy6mIN`, requestOptions)
+  fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${callState}&limit=${callNumber}&api_key=`, requestOptions)
     .then(response => response.json())
     .then(result => displayParks(result.data))
     .catch(error => console.log('error', error));
