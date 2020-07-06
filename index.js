@@ -72,7 +72,12 @@ for (let i = 1; i <= 10; i++) {
 
 $( "#target" ).submit(function( event ) {
   event.preventDefault()
-  let selectedState = $('#locality-dropdown option:selected').val()
+
+  let selectedState
+  $('#locality-dropdown option:selected').each(function(i){
+    selectedState += ','+$(this).val();
+  });
+  console.log(selectedState)
   let selectedResultNo = $('#number-of-results option:selected').val()
   fetchParks(selectedState, selectedResultNo)
 });
@@ -84,7 +89,7 @@ let requestOptions = {
 };
 
 function fetchParks(callState, callNumber) {
-  fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${callState}&limit=${callNumber}&api_key=`, requestOptions)
+  fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${callState}&limit=${callNumber}&api_key=pmR4TzuxnGHYZZcFfX8gchXlgxfdTbjPHLFy6mIN`, requestOptions)
     .then(response => response.json())
     .then(result => displayParks(result.data))
     .catch(error => console.log('error', error));
@@ -92,7 +97,7 @@ function fetchParks(callState, callNumber) {
 
 function displayParks(result) {
   for (var i = 0; i < Object.keys(result).length; i++) {
-    $(".results").append($('<h1></h1>').html(result[i].fullName))
+    $(".results").append($('<h3></h3>').html(result[i].fullName))
     $(".results").append($('<p></p>').html(result[i].description))
     $(".results").append($(`<a href="${result[i].url}"></a>`).html(result[i].url))
   }
