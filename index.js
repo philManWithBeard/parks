@@ -62,6 +62,7 @@ const states = {
   "WY": "Wyoming"
 }
 
+const endpoint = "https://developer.nps.gov/api/v1/parks"
 const apiKey = 'pmR4TzuxnGHYZZcFfX8gchXlgxfdTbjPHLFy6mIN'
 
 for (let [key, value] of Object.entries(states)) {
@@ -74,6 +75,23 @@ for (let i = 1; i <= 9; i++) {
 
 $("#number-of-results").append($('<option selected="selected"></option>').val(10).html(10))
 
+function formQuery(states, resultNo) {
+  const params = {
+    stateCode: states,
+    limit: resultNo,
+    api_key: apiKey,
+  };
+  let queryString = formatQueryParams(params)
+  const url = endpoint + '?' + queryString;
+  fetchParks(url)
+}
+
+function formatQueryParams(params) {
+  const queryItems = Object.keys(params)
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+  return queryItems.join('&');
+}
+
 function watchForm() {
   $("#target").submit(function(event) {
     event.preventDefault()
@@ -82,13 +100,9 @@ function watchForm() {
       selectedState += ',' + $(this).val();
     });
     let selectedResultNo = $('#number-of-results option:selected').val()
-    const requestURL = `https://developer.nps.gov/api/v1/parks?stateCode=${selectedState}&limit=${selectedResultNo}&api_key=${apiKey}`
-    fetchParks(requestURL)
+    formQuery(selectedState, selectedResultNo)
   });
 }
-
-
-
 
 const requestOptions = {
   method: 'GET',
@@ -109,6 +123,7 @@ function displayParks(result) {
     $(".results").append($('<p></p>').html(result[i].description))
     $(".results").append($(`<a href="${result[i].url}"></a>`).html(result[i].url))
   }
+     $('.results').removeAttr('hidden');
 }
 
 $(watchForm)
